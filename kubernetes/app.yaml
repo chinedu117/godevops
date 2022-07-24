@@ -64,9 +64,10 @@ metadata:
   labels:
     app: mysql
 data:
+  MYSQL_USER: test
+  MYSQL_PASS: password
   MYSQL_DB: testdb
-  MYSQL_USER: root
-  MYSQL_PASSWORD: password
+  MYSQL_ROOT_PASSWORD: password
 
 ---
 # Mysql statefulset: Using statefulset so as to avoid write conflict on scale
@@ -100,6 +101,7 @@ spec:
         envFrom:
             - configMapRef:
                 name: mysql-secret        
+# we chose to use volumeClaimTemplates so that each replica gets a volume by default
 volumeClaimTemplates:
 - metadata:
     name: mysql-storage

@@ -1,21 +1,23 @@
-FROM golang:latest as builder
+# Build Stage
+# First pull Golang image
+FROM golang:1.17-alpine 
+ENV GO111MODULE=on
+#GOPATH MUST BE OUTSIDE OF GOROOT directory!!!
+ENV GOPATH=/app
+ENV PATH=$PATH:$GOPATH
+ENV GOROOT=/usr/local/go
+ENV PATH=$PATH:$GOROOT/bin
+# Set environment variable
+# Copy application data into image
 
-ENV APP_HOME /go/src/webserver
+WORKDIR /app/app.com
+COPY ./app.com .
+# RUN go mod download
+# Budild application
+RUN CGO_ENABLED=0 go build webserver.go 
 
-WORKDIR /app/
-COPY . .
-
-RUN go mod download
-RUN go mod verify
-RUN go build webserver.go
-
-FROM golang:latest
-
-ENV APP_HOME /go/src/webserver
-RUN mkdir -p "$APP_HOME"
-WORKDIR "$APP_HOME"
-COPY . .
-COPY --from=builder "$APP_HOME"/webserver $APP_HOME
-
-EXPOSE 8222
-CMD ["./webserver"]
+# Expose application port
+EXPOSE 8080
+ 
+# Start app
+CMD ./server

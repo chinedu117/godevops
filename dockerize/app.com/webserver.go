@@ -1,7 +1,7 @@
 package main
 
 import (
-	"dockerize/webserver/articlehandler"
+	"webserver/articlehandler"
 	"bufio"
 	"database/sql"
 	"fmt"
